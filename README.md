@@ -1,12 +1,38 @@
-# React + Vite
+# 💸 PayMe - Invoice & Expense Tracker PWA
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**PayMe** is a modern, mobile-first Progressive Web App (PWA) for freelancers and small businesses to create invoices, manage purchases, track expenses, and generate insightful reports.
 
-Currently, two official plugins are available:
+![banner](./public/banner.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 🚀 Features
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- 📱 Mobile-first PWA with offline support
+- 🔐 Firebase Authentication (Email/Password)
+- 📦 Sales, Purchases & Expenses Tracking
+- 📊 Dashboard with Summary Cards & Charts
+- 🧾 Downloadable Reports in Excel & PDF
+- 📂 Image Uploads (e.g., Purchase Invoices)
+- 👤 Profile menu with login/logout/settings
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React + Vite
+- **UI:** Tailwind CSS + DaisyUI
+- **Auth & DB:** Firebase Auth + Firestore
+- **Charts:** Recharts
+- **PDF & Excel:** jsPDF, SheetJS (xlsx)
+- **PWA:** vite-plugin-pwa
+
+---
+
+## 📦 Installation
+
+```bash
+git clone https://github.com/JeganJack94/payme.git
+cd payme
+npm install
+```
