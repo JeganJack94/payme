@@ -89,7 +89,6 @@ const Expenses = () => {
       setExpenses(expensesData);
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching expenses:", error);
       setLoading(false);
     }
   };
@@ -97,13 +96,11 @@ const Expenses = () => {
   const handleDelete = async (id) => {
     try {
       if (!auth.currentUser) {
-        console.error("No authenticated user!");
         return;
       }
       await deleteDoc(doc(db, `users/${auth.currentUser.uid}/expenses/${id}`));
       await fetchExpenses(); // Refresh the expenses list after deletion
     } catch (error) {
-      console.error("Error deleting expense:", error);
     }
   };
 
@@ -154,7 +151,6 @@ const Expenses = () => {
 
       return filtered;
     } catch (error) {
-      console.error("Error filtering expenses:", error);
       return [];
     }
   };

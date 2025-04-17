@@ -7,7 +7,7 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { getAuth } from "firebase/auth";
 import * as XLSX from "xlsx";
-import { app } from "../firebase"; // Changed back to 'app'
+import { app } from "../services/firebase";
 
 const db = getFirestore(app); // Using 'app' instead of 'firebaseApp'
 

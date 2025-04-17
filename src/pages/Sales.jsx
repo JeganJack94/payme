@@ -47,11 +47,10 @@ const Sales = () => {
         invoiceNumber: `INV/${nextInvoiceNumber}/${new Date().getFullYear()}`, // Example format: INV/001/2023
         createdAt: new Date().toISOString()
       });
-      console.log('Invoice created with ID:', docRef.id); // Debug log
       await fetchInvoices();
       setShowForm(false);
-    } catch (error) {
-      console.error("Error creating invoice:", error);
+    } catch {
+      // Handle error
     }
   };
 
@@ -68,8 +67,8 @@ const Sales = () => {
       await fetchInvoices();
       setEditingInvoice(null);
       setShowForm(false);
-    } catch (error) {
-      console.error("Error updating invoice:", error);
+    } catch {
+      // Handle error
     }
   };
 
@@ -80,8 +79,8 @@ const Sales = () => {
         await deleteDoc(doc(db, `users/${userId}/sales/${id}`));
         await fetchInvoices();
       }
-    } catch (error) {
-      console.error("Error deleting invoice:", error);
+    } catch {
+      // Handle error
     }
   };
 
@@ -102,8 +101,8 @@ const Sales = () => {
       await fetchInvoices();
       setShowPaymentDialog(false);
       setSelectedInvoice(null);
-    } catch (error) {
-      console.error("Error updating payment:", error);
+    } catch {
+      // Handle error
     }
   };
 
@@ -146,11 +145,9 @@ const Sales = () => {
         ...doc.data()
       }));
       
-      console.log('Fetched invoices:', invoicesData); // Debug log
       setInvoices(invoicesData);
-    } catch (error) {
-      console.error("Error fetching invoices:", error);
-      setError(error.message);
+    } catch {
+      // Handle error
     } finally {
       setLoading(false);
     }

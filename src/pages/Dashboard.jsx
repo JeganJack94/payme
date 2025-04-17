@@ -4,7 +4,7 @@ import {
   PieChart, Pie, Cell, Legend
 } from "recharts";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
-import { app } from "../firebase";
+import { app } from "../services/firebase";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { getAuth } from "firebase/auth";
@@ -26,8 +26,6 @@ const Dashboard = () => {
     const user = auth.currentUser;
     if (user) {
       setUserId(user.uid);
-    } else {
-      console.error("No user is logged in.");
     }
   }, []);
 

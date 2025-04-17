@@ -2,29 +2,30 @@ import React, { useState, useEffect } from 'react';
 import { PurchaseForm } from '../components/PurchaseForm';
 import {
   Container, Button, Box, Typography, TextField, MenuItem, 
-  Card, CardContent, Grid, IconButton, Stack, Chip,
+  Card, CardContent, IconButton, Stack, Chip,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
   Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress,
-  FormControl, InputLabel, Select, Fab
+  FormControl, InputLabel, Select, Fab, useMediaQuery
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PaymentIcon from '@mui/icons-material/Payment';
 import SearchIcon from '@mui/icons-material/Search';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import AddIcon from '@mui/icons-material/Add';
 import { collection, query, getDocs, deleteDoc, doc, addDoc, updateDoc, orderBy } from 'firebase/firestore';
 import { db, auth } from '../services/firebase';
+import { useTheme } from '@mui/material/styles';
 
 const Purchases = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [showForm, setShowForm] = useState(false);
   const [purchases, setPurchases] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedPurchase, setSelectedPurchase] = useState(null);
   const [editingPurchase, setEditingPurchase] = useState(null);
-  
-  // Filter states
+
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('');
   const [dateFilterType, setDateFilterType] = useState("thisMonth");
@@ -33,7 +34,6 @@ const Purchases = () => {
     end: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().split('T')[0]
   });
 
-  // Payment dialog states
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const [paymentAmount, setPaymentAmount] = useState(0);
 
@@ -47,9 +47,7 @@ const Purchases = () => {
     try {
       const userId = auth.currentUser.uid;
       const purchasesRef = collection(db, `users/${userId}/purchases`);
-      
-      // Generate PO number
-      const lastPurchase = purchases[0]; // Assuming purchases are sorted by createdAt in descending order
+      const lastPurchase = purchases[0];
       const lastPONumber = lastPurchase?.purchaseNumber?.replace("PO", "") || "0000";
       const newPONumber = `PO${(parseInt(lastPONumber, 10) + 1).toString().padStart(4, "0")}`;
 
@@ -64,7 +62,7 @@ const Purchases = () => {
         remainingAmount: Number(purchaseData.total || 0),
       };
       await addDoc(purchasesRef, newPurchase);
-      await fetchPurchases(); // Ensure the latest data is fetched
+      await fetchPurchases();
       setShowForm(false);
     } catch (error) {
       console.error("Error creating purchase:", error);
@@ -102,14 +100,14 @@ const Purchases = () => {
       const purchaseRef = doc(db, `users/${userId}/purchases/${purchase.id}`);
       const newPaidAmount = Number(purchase.paidAmount || 0) + Number(amount);
       const total = Number(purchase.total);
-      
+
       await updateDoc(purchaseRef, {
         paidAmount: newPaidAmount,
         paymentStatus: newPaidAmount >= total ? 'paid' : 'partial',
         remainingAmount: total - newPaidAmount,
         lastPaymentDate: new Date().toISOString()
       });
-      
+
       await fetchPurchases();
       setShowPaymentDialog(false);
       setSelectedPurchase(null);
@@ -138,7 +136,7 @@ const Purchases = () => {
       default:
         return;
     }
-    
+
     setDateFilterType(type);
     setDateRange({
       start: start.toISOString().split('T')[0],
@@ -149,7 +147,7 @@ const Purchases = () => {
   const getFilteredPurchases = () => {
     if (!purchases) return [];
     let filtered = [...purchases];
-    
+
     if (search) {
       filtered = filtered.filter((purchase) =>
         purchase.vendorName?.toLowerCase().includes(search.toLowerCase()) ||
@@ -191,7 +189,7 @@ const Purchases = () => {
       const userId = auth.currentUser.uid;
       const purchasesRef = collection(db, `users/${userId}/purchases`);
       const q = query(purchasesRef, orderBy('createdAt', 'desc'));
-      
+
       const querySnapshot = await getDocs(q);
       const purchasesData = querySnapshot.docs.map(doc => ({
         id: doc.id,
@@ -200,7 +198,7 @@ const Purchases = () => {
         paidAmount: Number(doc.data().paidAmount || 0),
         remainingAmount: Number(doc.data().remainingAmount || 0),
       }));
-      
+
       setPurchases(purchasesData);
     } catch (error) {
       console.error("Error fetching purchases:", error);
@@ -225,7 +223,7 @@ const Purchases = () => {
   }
 
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth="xl" sx={{ px: isMobile ? 1 : 3 }}>
       {error ? (
         <Box sx={{ color: 'error.main', textAlign: 'center', my: 2 }}>
           Error: {error}
@@ -283,32 +281,26 @@ const Purchases = () => {
                   </Select>
                 </FormControl>
                 <Box sx={{ 
-                  overflowX: 'auto',
-                  mx: -2,
-                  px: 2,
-                  pb: 1
+                  display: 'flex', 
+                  flexWrap: 'wrap', 
+                  gap: 1, 
+                  justifyContent: 'center' 
                 }}>
-                  <Stack 
-                    direction="row" 
-                    spacing={1}
-                    sx={{ minWidth: 'min-content' }}
-                  >
-                    <Chip
-                      label="This Month"
-                      onClick={() => handleDateFilterChange("thisMonth")}
-                      color={dateFilterType === "thisMonth" ? "primary" : "default"}
-                    />
-                    <Chip
-                      label="Last Month"
-                      onClick={() => handleDateFilterChange("lastMonth")}
-                      color={dateFilterType === "lastMonth" ? "primary" : "default"}
-                    />
-                    <Chip
-                      label="This Year"
-                      onClick={() => handleDateFilterChange("thisYear")}
-                      color={dateFilterType === "thisYear" ? "primary" : "default"}
-                    />
-                  </Stack>
+                  <Chip
+                    label="This Month"
+                    onClick={() => handleDateFilterChange("thisMonth")}
+                    color={dateFilterType === "thisMonth" ? "primary" : "default"}
+                  />
+                  <Chip
+                    label="Last Month"
+                    onClick={() => handleDateFilterChange("lastMonth")}
+                    color={dateFilterType === "lastMonth" ? "primary" : "default"}
+                  />
+                  <Chip
+                    label="This Year"
+                    onClick={() => handleDateFilterChange("thisYear")}
+                    color={dateFilterType === "thisYear" ? "primary" : "default"}
+                  />
                 </Box>
               </Stack>
             </CardContent>

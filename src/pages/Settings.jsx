@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getAuth, updateProfile, sendPasswordResetEmail, signOut } from "firebase/auth";
-import { app } from "../firebase";
+import { app } from "../services/firebase";
+import { FaEdit } from "react-icons/fa"; // Added import for FontAwesome edit icon
 
 const Settings = () => {
   const auth = getAuth(app);
@@ -85,9 +86,9 @@ const Settings = () => {
                   <p className="text-lg font-medium text-gray-800">{user.displayName || "N/A"}</p>
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="text-sm text-[#e82c2a] underline hover:text-red-700"
+                    className="text-sm text-gray-500 hover:text-gray-700"
                   >
-                    Edit
+                    <FaEdit /> {/* Updated icon color to neutral gray */}
                   </button>
                 </div>
               )}
